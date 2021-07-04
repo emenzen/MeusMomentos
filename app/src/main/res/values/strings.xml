@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Meus Momentos</string>
+    <string name="confirmar_exclusao">Confirme exclusão</string>
+    <string name="quer_mesmo_apagar">Você realmente quer apagar esse registro?</string>
+    <string name="ok">OK</string>
+    <string name="erro">Erro</string>
+    <string name="erro_salvando_momento">Não foi possivel salvar o momento</string>
+</resources>
