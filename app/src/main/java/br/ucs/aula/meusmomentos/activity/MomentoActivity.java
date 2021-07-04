@@ -1,10 +1,17 @@
 package br.ucs.aula.meusmomentos.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -14,7 +21,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -22,6 +31,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 import br.ucs.aula.meusmomentos.R;
 import br.ucs.aula.meusmomentos.banco.BDSQLiteHelper;
@@ -33,6 +44,11 @@ public class MomentoActivity extends AppCompatActivity {
     private final int CAMERA = 1;
     private File arquivoMomento = null;
     private ImageView imagem;
+    private double latitude;
+    private double longitude;
+    private Geocoder geocoder;
+    private List<Address> addresses;
+    private String fullAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +71,10 @@ public class MomentoActivity extends AppCompatActivity {
                 Momento momento = new Momento();
                 momento.setDescricao(descricao.getText().toString());
                 momento.setData(Calendar.getInstance().getTime().toString());
-                //momento.setLocal(local.getText().toString());
+                momento.setLocalizacao(getLocation());
                 momento.setCaminho(arquivoMomento.getAbsolutePath());
                 bd.addMomento(momento);
-                Intent intent = new Intent(MomentoActivity.this,MainActivity.class);
+                Intent intent = new Intent(MomentoActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -122,11 +138,52 @@ public class MomentoActivity extends AppCompatActivity {
                     Uri.fromFile(arquivoMomento))
             );
             mostraMomento(arquivoMomento.getAbsolutePath());
-        }
-        else{
+        } else {
             Intent intent = new Intent(MomentoActivity.this, MainActivity.class);
             startActivity(intent);
         }
     }
+
+    public void getCurrentLocation() {
+        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(@NonNull Location location) {
+                latitude = location.getLatitude();
+                longitude = location.getLongitude();
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            }, 10);
+            return;
+        }
+        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+    }
+
+    public String getLocation(){
+        geocoder = new Geocoder(this, Locale.getDefault());
+        this.getCurrentLocation();
+        try {
+            addresses = geocoder.getFromLocation(latitude, longitude, 1);
+            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+            String city = addresses.get(0).getLocality();
+            String state = addresses.get(0).getAdminArea();
+            String country = addresses.get(0).getCountryName();
+            String postalCode = addresses.get(0).getPostalCode();
+            String knownName = addresses.get(0).getFeatureName();
+            fullAddress = address + ", " + city + ", " + state + " - " + country + "\n" + postalCode + ", " + knownName;
+            return  fullAddress;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+
+
 
 }
