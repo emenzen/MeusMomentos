@@ -33,6 +33,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.TimeZone;
 
 import br.ucs.aula.meusmomentos.R;
 import br.ucs.aula.meusmomentos.banco.BDSQLiteHelper;
@@ -68,13 +69,22 @@ public class MomentoActivity extends AppCompatActivity {
         novo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Brazil/East"));
+                int ano = calendar.get(Calendar.YEAR);
+                int mes = calendar.get(Calendar.MONTH) +1; // O mês vai de 0 a 11.
+                int semana = calendar.get(Calendar.WEEK_OF_MONTH);
+                int dia = calendar.get(Calendar.DAY_OF_MONTH);
+                int hora = calendar.get(Calendar.HOUR_OF_DAY);
+                int minuto = calendar.get(Calendar.MINUTE);
+                int segundo = calendar.get(Calendar.SECOND);
                 Momento momento = new Momento();
                 momento.setDescricao(descricao.getText().toString());
-                momento.setData(Calendar.getInstance().getTime().toString());
+                momento.setData(String.valueOf(dia)+'/'+String.valueOf(mes)+'/'+String.valueOf(ano)+
+                        ' '+String.valueOf(hora)+':'+String.valueOf(minuto)+':'+String.valueOf(segundo));
                 momento.setLocalizacao(getLocation());
                 momento.setCaminho(arquivoMomento.getAbsolutePath());
                 bd.addMomento(momento);
-                Intent intent = new Intent(MomentoActivity.this, MainActivity.class);
+                Intent intent = new Intent(MomentoActivity.this,MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -154,8 +164,7 @@ public class MomentoActivity extends AppCompatActivity {
             }
         };
 
-
-        locationManager.requestLocationUpdates("gps", 5000, 0, locationListener);
+        locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
     }
 
     public String getLocation(){
