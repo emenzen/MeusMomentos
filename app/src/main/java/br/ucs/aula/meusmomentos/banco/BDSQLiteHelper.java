@@ -101,7 +101,6 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(DESCRICAO, momento.getDescricao());
         values.put(DATA, momento.getData());
-        values.put(LOCALIZACAO, momento.getLocalizacao());
 
         int i = db.update(TABELA_MOMENTOS, //tabela
                 values, // valores

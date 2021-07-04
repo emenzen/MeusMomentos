@@ -41,7 +41,7 @@ public class Momento implements Serializable {
 
     public  String getLocalizacao() { return localizacao;}
 
-    public void setLocalizacao(String local) { this.localizacao = localizacao; }
+    public void setLocalizacao(String localizacao) { this.localizacao = localizacao; }
 
     public String getCaminho() { return caminho; }
 
