@@ -2,6 +2,7 @@ package br.ucs.aula.meusmomentos.activity;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,6 +17,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,7 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -50,6 +53,8 @@ public class MomentoActivity extends AppCompatActivity {
     private Geocoder geocoder;
     private List<Address> addresses;
     private String fullAddress;
+    private final int PERMISSAO_REQUEST = 2;
+    private LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,18 +65,18 @@ public class MomentoActivity extends AppCompatActivity {
         //final EditText data = (EditText) findViewById(R.id.edData);
         //final EditText local = (EditText) findViewById(R.id.edlocal);
 
+        configureGPS();
         //referencia o componente de imagem
         this.imagem = (ImageView) findViewById(R.id.pv_image);
         //chma a camera
         tirarMomento(null);
-
         Button novo = (Button) findViewById(R.id.btnAdd);
         novo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Brazil/East"));
                 int ano = calendar.get(Calendar.YEAR);
-                int mes = calendar.get(Calendar.MONTH) +1; // O mês vai de 0 a 11.
+                int mes = calendar.get(Calendar.MONTH) + 1; // O mês vai de 0 a 11.
                 int semana = calendar.get(Calendar.WEEK_OF_MONTH);
                 int dia = calendar.get(Calendar.DAY_OF_MONTH);
                 int hora = calendar.get(Calendar.HOUR_OF_DAY);
@@ -79,12 +84,12 @@ public class MomentoActivity extends AppCompatActivity {
                 int segundo = calendar.get(Calendar.SECOND);
                 Momento momento = new Momento();
                 momento.setDescricao(descricao.getText().toString());
-                momento.setData(String.valueOf(dia)+'/'+String.valueOf(mes)+'/'+String.valueOf(ano)+
-                        ' '+String.valueOf(hora)+':'+String.valueOf(minuto)+':'+String.valueOf(segundo));
-                momento.setLocalizacao(getLocation());
+                momento.setData(String.valueOf(dia) + '/' + String.valueOf(mes) + '/' + String.valueOf(ano) +
+                        ' ' + String.valueOf(hora) + ':' + String.valueOf(minuto) + ':' + String.valueOf(segundo));
+                momento.setLocalizacao(fullAddress);
                 momento.setCaminho(arquivoMomento.getAbsolutePath());
                 bd.addMomento(momento);
-                Intent intent = new Intent(MomentoActivity.this,MainActivity.class);
+                Intent intent = new Intent(MomentoActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });
@@ -155,19 +160,48 @@ public class MomentoActivity extends AppCompatActivity {
     }
 
     public void getCurrentLocation() {
-        LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        LocationListener locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                latitude = location.getLatitude();
-                longitude = location.getLongitude();
+        if (ActivityCompat.checkSelfPermission(
+                MomentoActivity.this,Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                MomentoActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSAO_REQUEST);
+        } else {
+            Location locationGPS = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (locationGPS != null) {
+                latitude = locationGPS.getLatitude();
+                longitude = locationGPS.getLongitude();
             }
-        };
-
-        locationManager.requestLocationUpdates("gps", 1000, 0, locationListener);
+        }
     }
 
-    public String getLocation(){
+    public void configureGPS(){
+        ActivityCompat.requestPermissions( this,
+                new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSAO_REQUEST);
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            OnGPS();
+        } else {
+            getLocation();
+        }
+    }
+
+    private void OnGPS() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Enable GPS").setCancelable(false).setPositiveButton("Yes", new  DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    public void getLocation(){
         geocoder = new Geocoder(this, Locale.getDefault());
         this.getCurrentLocation();
         try {
@@ -179,12 +213,9 @@ public class MomentoActivity extends AppCompatActivity {
             String postalCode = addresses.get(0).getPostalCode();
             String knownName = addresses.get(0).getFeatureName();
             fullAddress = address + ", " + city + ", " + state + " - " + country + "\n" + postalCode + ", " + knownName;
-            return  fullAddress;
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        return "";
     }
 
 
