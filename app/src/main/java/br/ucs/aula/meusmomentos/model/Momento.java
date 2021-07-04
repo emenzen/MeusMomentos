@@ -6,16 +6,16 @@ public class Momento implements Serializable {
     private int codigo;
     private String descricao;
     private String data;
-    private String local;
+    private String localizacao;
     private String caminho;
 
     public Momento() { }
 
-    public Momento(String descricao, String data, String local, String caminho) {
+    public Momento(String descricao, String data, String localizacao, String caminho) {
         super();
         this.descricao = descricao;
         this.data = data;
-        this.local = local;
+        this.localizacao = localizacao;
         this.caminho = caminho;
     }
 
@@ -39,9 +39,9 @@ public class Momento implements Serializable {
 
     public void setData(String data) { this.data = data; }
 
-    public  String getLocal() { return local;}
+    public  String getLocalizacao() { return localizacao;}
 
-    public void setLocal(String local) { this.local = local; }
+    public void setLocalizacao(String local) { this.localizacao = localizacao; }
 
     public String getCaminho() { return caminho; }
 

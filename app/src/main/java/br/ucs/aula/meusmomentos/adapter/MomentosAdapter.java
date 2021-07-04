@@ -1,10 +1,8 @@
 package br.ucs.aula.meusmomentos.adapter;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.ThumbnailUtils;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
@@ -51,7 +49,7 @@ public class MomentosAdapter extends RecyclerView.Adapter<MomentosAdapter.ViewHo
 
         private TextView txtDescricao;
         private TextView txtData;
-        private TextView txtLocal;
+        private TextView txtLocalizacao;
         private ImageView imagem;
 
         public ViewHolder(@NonNull View itemView) {
@@ -59,15 +57,14 @@ public class MomentosAdapter extends RecyclerView.Adapter<MomentosAdapter.ViewHo
             itemView.setOnClickListener(this);
             txtDescricao = itemView.findViewById(R.id.txtDescricao);
             txtData = itemView.findViewById(R.id.txtData);
-            txtLocal = itemView.findViewById(R.id.txtLocal);
+            txtLocalizacao = itemView.findViewById(R.id.txtLocalizacao);
             imagem = itemView.findViewById(R.id.lvMomento);
         }
 
         private void setData(Momento momento) {
-            //se não tiver título, mostra o caminho da momento..
-            //txtTitulo.setText(momento.getTitulo().isEmpty()?momento.getCaminho():momento.getTitulo());
             txtDescricao.setText(momento.getDescricao());
-            //Bitmap bitmap = BitmapFactory.decodeFile(momento.getCaminho());
+            txtData.setText(momento.getData());
+            txtLocalizacao.setText(momento.getLocalizacao());
             Bitmap bitmap = ThumbnailUtils.createImageThumbnail(momento.getCaminho(), MediaStore.Images.Thumbnails.MICRO_KIND);
             imagem.setImageBitmap(bitmap);
         }

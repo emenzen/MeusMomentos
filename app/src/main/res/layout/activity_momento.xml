@@ -18,20 +18,6 @@
         android:rowCount="9"
         android:useDefaultMargins="true">
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayout"
-            android:layout_width="324dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edDescricao"
-                android:layout_width="324dp"
-                android:layout_height="wrap_content"
-                android:hint="Descrição" />
-        </com.google.android.material.textfield.TextInputLayout>
-
         <!--Aqui vai a imagem -->
 
         <com.github.chrisbanes.photoview.PhotoView
@@ -48,10 +34,10 @@
             android:layout_height="wrap_content">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/edData"
+                android:id="@+id/edDescricao"
                 android:layout_width="324dp"
                 android:layout_height="wrap_content"
-                android:hint="Data" />
+                android:hint="Descrição" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout

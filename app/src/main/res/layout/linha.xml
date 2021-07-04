@@ -30,11 +30,11 @@
             android:text="Data"
             android:textColor="@color/momentoInfo" />
         <TextView
-            android:id="@+id/txtLocal"
+            android:id="@+id/txtLocalizacao"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Local"
+            android:text="Localização"
             android:textColor="@color/momentoInfo" />
     </LinearLayout>
 

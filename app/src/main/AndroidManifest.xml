@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MeusMomentos">
-        <activity android:name=".activity.EditarFotoActivity"></activity>
+        <activity android:name=".activity.EditarMomentoActivity"></activity>
         <activity android:name=".activity.MomentoActivity"/>
 
         <activity android:name=".activity.MainActivity">

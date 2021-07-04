@@ -20,6 +20,7 @@ import androidx.core.content.FileProvider;
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import br.ucs.aula.meusmomentos.R;
@@ -39,7 +40,7 @@ public class MomentoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_momento);
         bd = new BDSQLiteHelper(this);
         final EditText descricao = (EditText) findViewById(R.id.edDescricao);
-        final EditText data = (EditText) findViewById(R.id.edData);
+        //final EditText data = (EditText) findViewById(R.id.edData);
         //final EditText local = (EditText) findViewById(R.id.edlocal);
 
         //referencia o componente de imagem
@@ -53,7 +54,7 @@ public class MomentoActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Momento momento = new Momento();
                 momento.setDescricao(descricao.getText().toString());
-                momento.setData(data.getText().toString());
+                momento.setData(Calendar.getInstance().getTime().toString());
                 //momento.setLocal(local.getText().toString());
                 momento.setCaminho(arquivoMomento.getAbsolutePath());
                 bd.addMomento(momento);

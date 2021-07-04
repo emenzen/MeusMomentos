@@ -17,9 +17,9 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
     private static final String CODIGO = "codigo";
     private static final String DESCRICAO = "descricao";
     private static final String DATA = "data";
-    private static final String LOCAL = "local";
+    private static final String LOCALIZACAO = "localizacao";
     private static final String CAMINHO = "caminho";
-    private static final String[] COLUNAS = {CODIGO, DESCRICAO, DATA, LOCAL, CAMINHO};
+    private static final String[] COLUNAS = {CODIGO, DESCRICAO, DATA, LOCALIZACAO, CAMINHO};
 
     public BDSQLiteHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +31,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
                 "codigo INTEGER PRIMARY KEY AUTOINCREMENT,"+
                 "descricao TEXT,"+
                 "data TEXT,"+
-                "local TEXT,"+
+                "localizacao TEXT,"+
                 "caminho TEXT)";
         db.execSQL(CREATE_TABLE);
     }
@@ -47,7 +47,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(DESCRICAO, momento.getDescricao());
         values.put(DATA, momento.getData());
-        values.put(LOCAL, momento.getLocal());
+        values.put(LOCALIZACAO, momento.getLocalizacao());
         values.put(CAMINHO, momento.getCaminho());
         db.insert(TABELA_MOMENTOS, null, values);
         db.close();
@@ -77,7 +77,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
         momento.setCodigo(Integer.parseInt(cursor.getString(0)));
         momento.setDescricao(cursor.getString(1));
         momento.setData(cursor.getString(2));
-        momento.setLocal(cursor.getString(3));
+        momento.setLocalizacao(cursor.getString(3));
         momento.setCaminho(cursor.getString(4));
         return momento;
     }
@@ -101,7 +101,7 @@ public class BDSQLiteHelper extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(DESCRICAO, momento.getDescricao());
         values.put(DATA, momento.getData());
-        values.put(LOCAL, momento.getLocal());
+        values.put(LOCALIZACAO, momento.getLocalizacao());
 
         int i = db.update(TABELA_MOMENTOS, //tabela
                 values, // valores
