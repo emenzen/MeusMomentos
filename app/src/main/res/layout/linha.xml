@@ -6,8 +6,8 @@
 
     <ImageView
         android:id="@+id/lvMomento"
-        android:layout_width="60dp"
-        android:layout_height="62dp" />
+        android:layout_width="150dp"
+        android:layout_height="130dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
