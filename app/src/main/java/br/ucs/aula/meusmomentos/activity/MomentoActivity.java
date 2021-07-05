@@ -207,12 +207,7 @@ public class MomentoActivity extends AppCompatActivity {
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
             String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            String city = addresses.get(0).getLocality();
-            String state = addresses.get(0).getAdminArea();
-            String country = addresses.get(0).getCountryName();
-            String postalCode = addresses.get(0).getPostalCode();
-            String knownName = addresses.get(0).getFeatureName();
-            fullAddress = address + ", " + city + ", " + state + " - " + country + "\n" + postalCode + ", " + knownName;
+            fullAddress = address;
         } catch (IOException e) {
             e.printStackTrace();
         }
