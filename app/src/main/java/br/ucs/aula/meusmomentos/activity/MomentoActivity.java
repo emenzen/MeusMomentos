@@ -62,13 +62,13 @@ public class MomentoActivity extends AppCompatActivity {
         setContentView(R.layout.activity_momento);
         bd = new BDSQLiteHelper(this);
         final EditText descricao = (EditText) findViewById(R.id.edDescricao);
-        //final EditText data = (EditText) findViewById(R.id.edData);
-        //final EditText local = (EditText) findViewById(R.id.edlocal);
+//        ActivityCompat.requestPermissions( this,
+//                new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSAO_REQUEST);
 
         configureGPS();
         //referencia o componente de imagem
         this.imagem = (ImageView) findViewById(R.id.pv_image);
-        //chma a camera
+        //chama a camera
         tirarMomento(null);
         Button novo = (Button) findViewById(R.id.btnAdd);
         novo.setOnClickListener(new View.OnClickListener() {
@@ -174,8 +174,6 @@ public class MomentoActivity extends AppCompatActivity {
     }
 
     public void configureGPS(){
-        ActivityCompat.requestPermissions( this,
-                new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSAO_REQUEST);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             OnGPS();
@@ -206,8 +204,10 @@ public class MomentoActivity extends AppCompatActivity {
         this.getCurrentLocation();
         try {
             addresses = geocoder.getFromLocation(latitude, longitude, 1);
-            String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
-            fullAddress = address;
+            if(addresses.size() > 0){
+                String address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                fullAddress = address;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
